@@ -22,6 +22,7 @@ variable "cloudflare_account_id" {
   sensitive = true
 }
 
+# https://registry.terraform.io/providers/cloudflare/cloudflare/latest/docs
 provider "cloudflare" {
   api_token = var.cloudflare_api_token
 }
