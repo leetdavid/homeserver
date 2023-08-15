@@ -23,34 +23,15 @@ resource "cloudflare_record" "traefik" {
 }
 
 # https://registry.terraform.io/providers/cloudflare/cloudflare/latest/docs/resources/record
-resource "cloudflare_record" "plex" {
+resource "cloudflare_record" "traefik_domains" {
+  for_each = toset([
+    "plex", "auth", "code-server", "minecraft", "minecraft-admin", "traefik-dashboard", 
+    "homer", "sonarr", "radarr", "test", "homeassistant", "photoprism", "secret", "ssh"
+  ])
+
   zone_id = var.cloudflare_zone_id
-  name    = "plex"
-  value   = "${cloudflare_record.traefik.name}.${local.domain_name}"
-  type    = "CNAME"
-  ttl     = 1
-  proxied = true
-
-  allow_overwrite = true
-}
-
-# https://registry.terraform.io/providers/cloudflare/cloudflare/latest/docs/resources/record
-resource "cloudflare_record" "auth" {
-  zone_id = var.cloudflare_zone_id
-  name    = "auth"
-  value   = "${cloudflare_record.traefik.name}.${local.domain_name}"
-  type    = "CNAME"
-  ttl     = 1
-  proxied = true
-
-  allow_overwrite = true
-}
-
-# https://registry.terraform.io/providers/cloudflare/cloudflare/latest/docs/resources/record
-resource "cloudflare_record" "code_server" {
-  zone_id = var.cloudflare_zone_id
-  name    = "code-server"
-  value   = "${cloudflare_record.traefik.name}.${local.domain_name}"
+  name    = each.key
+  value   = cloudflare_record.traefik.hostname
   type    = "CNAME"
   ttl     = 1
   proxied = true
